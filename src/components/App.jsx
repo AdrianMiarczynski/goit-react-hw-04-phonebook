@@ -17,7 +17,7 @@ export const App = () => {
 
   useEffect(() => {
     if (isMounted) localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  },);
 
   const addContacts = async data => {
     await setContacts(prevContacts => [...prevContacts, data]);
