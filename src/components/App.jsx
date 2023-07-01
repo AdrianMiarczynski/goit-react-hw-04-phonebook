@@ -1,37 +1,23 @@
 import ContactsForm from './contactsform/contactsform';
-import { nanoid } from 'nanoid';
 import Contacts from './contactslist/contactslist';
 import FilterContacts from './filter/filter';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const App = () => {
+  const [isMounted, setIsMounted] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
 
-  // constructor() {
-  //   super();
-  //   const saveData = localStorage.getItem('contacts');
-  //   const parseData = JSON.parse(saveData);
-  //   this.state.contacts = parseData;
-  // }
+  useEffect(() => {
+    setIsMounted(true);
+    const saveData = localStorage.getItem('contacts');
+    const parseData = JSON.parse(saveData);
+    setContacts(parseData);
+  }, []);
 
-  const handlerChange = ev => {
-    setName(ev.target.value);
-  };
-  const handlerChangeNumber = ev => {
-    setNumber(ev.target.value);
-  };
-
-  const handlerSubmit = ev => {
-    ev.preventDefault();
-    const id = nanoid();
-    if (filterContacts(name).length !== 0) {
-      return alert(`${name} is already in contacts`);
-    }
-    addContacts({ name, number, id });
-  };
+  useEffect(() => {
+    if (isMounted) localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const addContacts = async data => {
     await setContacts(prevContacts => [...prevContacts, data]);
@@ -52,30 +38,14 @@ export const App = () => {
       prevContacts.filter(contact => contact.id !== id)
     );
   };
-  // componentDidUpdate() {
-  //   localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  // }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactsForm
-        handlerChange={handlerChange}
-        handlerChangeNumber={handlerChangeNumber}
-        handlerSubmit={handlerSubmit}
-        name={name}
-        number={number}
-
-        // name={this.state.name}
-        // number={this.state.number}
-      />
+      <ContactsForm addContacts={addContacts} filterContacts={filterContacts} />
       <div>
         <h2>Contacts</h2>
-        <FilterContacts
-          filter={filter}
-          filterEvcontacts={filterEvcontacts}
-          // handlerChange={filterEvcontacts}
-        />
+        <FilterContacts filter={filter} filterEvcontacts={filterEvcontacts} />
         <Contacts
           contacts={filterContacts(filter)}
           deleteContact={deleteContact}

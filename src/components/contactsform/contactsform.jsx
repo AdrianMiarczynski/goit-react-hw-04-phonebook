@@ -1,13 +1,27 @@
 import PropTypes from 'prop-types';
 import css from './contactsform.module.css';
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
 
-const ContactsForm = ({
-  handlerChangeNumber,
-  handlerChange,
-  handlerSubmit,
-  number,
-  name,
-}) => {
+const ContactsForm = ({ filterContacts, addContacts }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handlerChange = ev => {
+    setName(ev.target.value);
+  };
+  const handlerChangeNumber = ev => {
+    setNumber(ev.target.value);
+  };
+
+  const handlerSubmit = ev => {
+    ev.preventDefault();
+    const id = nanoid();
+    if (filterContacts(name).length !== 0) {
+      return alert(`${name} is already in contacts`);
+    }
+    addContacts({ name, number, id });
+  };
   return (
     <form onSubmit={handlerSubmit} className={css.form}>
       <label htmlFor="name" className={css['form__label']}>
@@ -47,6 +61,6 @@ const ContactsForm = ({
 export default ContactsForm;
 
 ContactsForm.propTypes = {
-  handlerSubmit: PropTypes.func.isRequired,
-  // handlerChange: PropTypes.func.isRequired,
+  addContacts: PropTypes.func.isRequired,
+  filterContacts: PropTypes.func.isRequired,
 };

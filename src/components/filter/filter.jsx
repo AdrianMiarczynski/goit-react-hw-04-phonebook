@@ -19,5 +19,5 @@ export default FilterContacts;
 
 FilterContacts.propTypes = {
   filter: PropTypes.string.isRequired,
-  // handlerChange: PropTypes.func.isRequired,
+  filterEvcontacts: PropTypes.func.isRequired,
 };
